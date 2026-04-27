@@ -1,0 +1,40 @@
+{
+    "profile": "mtx-sidecar",
+    "requires": {
+        "html5-repo": true,
+        "portal": true,
+        "cds.xt.ExtensibilityService": {
+            "element-prefix": [
+                "Z_"
+            ],
+            "extension-allowlist": [
+                {
+                    "for": [
+                        "*"
+                    ]
+                }
+            ]
+        },
+        "cds.xt.ModelProviderService": {
+            "[development]": {
+                "root": "../.."
+            },
+            "[production]": {
+                "root": "_main"
+            },
+            "[prod]": {
+                "root": "_main"
+            }
+        },
+        "db": {
+            "vcap": {
+                "label": "service-manager"
+            }
+        },
+        "auth": {
+            "passport": {
+                "strategy": "JWT"
+            }
+        }
+    }
+}

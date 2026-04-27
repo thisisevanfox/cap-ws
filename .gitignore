@@ -1,0 +1,44 @@
+# CAP cap-ws
+_out
+*.db
+*.sqlite
+connection.properties
+default-*.json
+.cdsrc-private.json
+gen/
+node_modules/
+target/
+
+# Web IDE, App Studio
+.che/
+.gen/
+**/dist/
+
+# MTA
+*.mta
+*_mta_build_tmp
+*.mtar
+mta_archives/
+
+# Other
+.DS_Store
+*.orig
+*.log
+
+*.iml
+*.flattened-pom.xml
+
+# IDEs
+# .vscode
+# .idea
+
+# @cap-js/cds-typer
+@cds-models
+
+# sample data generation output
+*/output/**
+
+# mtx & extensibility
+.mtxcache.json
+extension-template/.base/index.csn
+extension-template/.base/package.json

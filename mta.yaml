@@ -1,0 +1,183 @@
+_schema-version: 3.3.0
+ID: cap-ws
+version: 1.0.0
+description: "A simple CAP project."
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+modules:
+  - name: cap-ws-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      disk-quota: 512M
+      memory: 256M
+      instances: 1
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: cap-ws-auth
+      - name: cap-ws-database
+
+  - name: cap-ws
+    type: approuter.nodejs
+    path: app/router
+    parameters:
+      keep-existing-routes: true
+      disk-quota: 256M
+      memory: 256M
+    properties:
+      TENANT_HOST_PATTERN: "^(.*)-${default-uri}"
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api # must be used in xs-app.json as well
+          url: ~{srv-url}
+          forwardAuthToken: true
+      - name: mtx-api
+        group: destinations
+        properties:
+          name: mtx-api # must be used in xs-app.json as well
+          url: ~{mtx-url}
+      - name: cap-ws-auth
+      - name: cap-ws-html5-runtime
+      - name: cap-ws-portal
+    provides:
+      - name: app-api
+        properties:
+          app-protocol: ${protocol}
+          app-uri: ${default-uri}
+
+  - name: cap-ws-mtx
+    type: nodejs
+    path: gen/mtx/sidecar
+    requires:
+      - name: app-api
+        properties:
+          SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}-~{app-uri}
+      - name: cap-ws-database
+      - name: cap-ws-html5-runtime
+      - name: cap-ws-registry
+      - name: cap-ws-portal
+      - name: cap-ws-auth
+    build-parameters:
+      builder: npm-ci
+    parameters:
+      instances: 1
+      memory: 256M
+      disk-quota: 512M
+    provides:
+      - name: mtx-api
+        properties:
+          mtx-url: ${default-url}
+
+  - name: cap-ws-app-deployer
+    type: com.sap.application.content
+    path: gen
+    requires:
+      - name: cap-ws-html5-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: app/
+      requires:
+        - name: cap-ws-app
+          artifacts:
+            - cap-ws.zip
+          target-path: app/
+
+  - name: cap-ws-app
+    type: html5
+    path: app/cap-ws
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+      supported-platforms:
+        []
+
+  - name: cap-ws-portal-deployer
+    type: com.sap.application.content
+    path: app/portal
+    parameters:
+      config:
+        TENANT_HOST_PATTERN: "^(.*)-${default-uri}"
+    requires:
+      - name: cap-ws-portal
+        parameters:
+          content-target: true
+          service-key:
+            name: cap-ws-portal-key
+            config:
+              content-endpoint: developer
+      - name: cap-ws-auth
+      - name: cap-ws-html5-repo-host
+      - name: cap-ws-app-deployer
+    deployed-after:
+      - cap-ws-app-deployer
+
+resources:
+  - name: cap-ws-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: cap-ws-${org}-${space}
+        tenant-mode: shared
+  - name: cap-ws-database
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: service-manager
+      service-plan: container
+
+  - name: cap-ws-html5-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+  - name: cap-ws-html5-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
+  - name: cap-ws-registry
+    type: org.cloudfoundry.managed-service
+    requires:
+      - name: mtx-api
+    parameters:
+      service: saas-registry
+      service-plan: application
+      config:
+        xsappname: cap-ws-${org}-${space}
+        appName: cap-ws-${org}-${space}
+        displayName: cap-ws
+        description: A simple CAP project.
+        category: 'Category'
+        appUrls:
+          getDependencies: ~{mtx-api/mtx-url}/-/cds/saas-provisioning/dependencies
+          onSubscription: ~{mtx-api/mtx-url}/-/cds/saas-provisioning/tenant/{tenantId}
+          onSubscriptionAsync: true
+          onUnSubscriptionAsync: true
+          onUpdateDependenciesAsync: true
+          callbackTimeoutMillis: 300000 # Increase if your deployments are taking longer than that
+  - name: cap-ws-portal
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: portal
+      service-plan: standard

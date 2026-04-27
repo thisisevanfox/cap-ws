@@ -1,0 +1,7 @@
+<mvc:View controllerName="cap-ws.controller.View"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    <Page id="page" title="{i18n>title}">
+        <Text id="textfield" text="Waiting for values from web socket..." />
+    </Page>
+</mvc:View>

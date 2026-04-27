@@ -1,0 +1,39 @@
+{
+  "name": "cap-ws",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@cap-js-community/websocket": "^1.10.1",
+    "@cap-js/hana": "^2",
+    "@sap/cds": "^9",
+    "@sap/cds-mtxs": "^3",
+    "@sap/xssec": "^4",
+    "cron": "^4.4.0",
+    "express": "^4",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@cap-js/cds-types": "^0.16.0",
+    "@cap-js/sqlite": "^2.2.1",
+    "@sap/cds-dk": "^9",
+    "cds-launchpad-plugin": "^2.2.0",
+    "cds-plugin-ui5": "^0.13.0",
+    "sqlite3": "^5"
+  },
+  "scripts": {
+    "dev": "cds watch --port 8080",
+    "login": "cf login -a https://api.cf.eu10.hana.ondemand.com/ -o <org> -s <space> --sso",
+    "node:clear": "find . -name 'node_modules' -exec rm -rf '{}' +; find . -name 'package-lock.json' -exec rm -rf '{}' +;",
+    "start": "cds-serve",
+    "ship": "mbt build -t gen --mtar mta.tar && cf deploy gen/mta.tar -f"
+  },
+  "workspaces": [
+    "app/*"
+  ],
+  "sapux": [
+    "app/cap-ws"
+  ]
+}

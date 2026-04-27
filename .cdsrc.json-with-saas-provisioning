@@ -1,0 +1,31 @@
+{
+    "sql": {
+        "native_hana_associations": false
+    },
+    "requires": {
+        "[development]": {
+            "multitenancy": false,
+            "auth": {
+                "kind": "mocked"
+            }
+        },
+        "[production]": {
+            "cds.xt.DeploymentService": true,
+            "auth": "xsuaa",
+            "db": {
+                "kind": "hana",
+                "vcap": {
+                    "label": "service-manager"
+                }
+            }
+        },
+        "multitenancy": true,
+        "extensibility": true,
+        "cds.xt.SaasProvisioningService": true,
+        "cds.xt.ExtensibilityService": true,
+        "cds.xt.ModelProviderService": true,
+        "html5-repo": true,
+        "portal": true
+    },
+    "profile": "with-mtx-sidecar"
+}

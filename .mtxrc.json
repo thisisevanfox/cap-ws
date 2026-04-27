@@ -1,0 +1,7 @@
+{
+    "uaaAppName": "cap-ws-srv",
+    "regAppName": "cap-ws-mtx",
+    "cdsAppName": "cap-ws-mtx",
+    "hdiAppName": "cap-ws-srv",
+    "srvAppName": "cap-ws-mtx"
+}
