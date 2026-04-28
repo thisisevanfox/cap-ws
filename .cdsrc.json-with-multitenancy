@@ -4,7 +4,7 @@
     },
     "requires": {
         "[development]": {
-            "multitenancy": false,
+            "multitenancy": true,
             "auth": {
                 "kind": "mocked"
             }
