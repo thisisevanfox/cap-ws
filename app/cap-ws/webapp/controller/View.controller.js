@@ -23,7 +23,7 @@ sap.ui.define([
                 const sMessageType = oMessage.event;
                 const oMessageData = oMessage.data;
 
-                if (sMessageType === 'valueUpdated') {
+                if (sMessageType === 'MOCK_WEBSOCKET_EVENT') {
                     this.getView().byId("textfield").setText(`Value from web socket: ${oMessageData.value}`)
                 }
             };

@@ -4,15 +4,10 @@
 ]
 service CatalogService {
 
-    event wsTest {
+    event MOCK_WEBSOCKET_EVENT {
         type  : String;
         value : String;
     }
 
-    event valueUpdated {
-        type  : String;
-        value : String;
-    }
-
-    function mockFunction() returns Boolean;
+    function mockWebSocket() returns Boolean;
 }
