@@ -13,8 +13,10 @@ sap.ui.define([
                 sWebSocketUrl = 'ws://' + document.location.host + sWebSocketEndpoint;
             }
 
-            // mock auth for alice
-            document.cookie = "X-Authorization=Basic YWxpY2U6YWxpY2U; path=/";
+            // mock auth for alice:alice
+            // document.cookie = "X-Authorization=Basic YWxpY2U6YWxpY2U; path=/";
+            // mock auth for yves:
+            document.cookie = "X-Authorization=Basic eXZlczo=; path=/";
             const oWebSocket = new WebSocket(sWebSocketUrl);
 
             oWebSocket.onmessage = (oEvent) => {

@@ -1,0 +1,6 @@
+events:
+  - type: MOCK_EVENT
+    subType: Single
+    impl: ./srv/event-queue
+    load: 1
+    parallelEventProcessing: 5

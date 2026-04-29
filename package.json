@@ -6,6 +6,7 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
+    "@cap-js-community/event-queue": "^2.1.0",
     "@cap-js-community/websocket": "^1.10.1",
     "@cap-js/hana": "^2",
     "@sap/cds": "^9",
@@ -22,10 +23,13 @@
     "cds-plugin-ui5": "^0.13.0"
   },
   "scripts": {
-    "dev": "cds watch --port 8080",
+    "dev": "cds watch",
     "login": "cf login -a https://api.cf.eu10.hana.ondemand.com/ -o <org> -s <space> --sso",
     "node:clear": "find . -name 'node_modules' -exec rm -rf '{}' +; find . -name 'package-lock.json' -exec rm -rf '{}' +;",
     "start": "cds-serve",
+    "subscribeTenants": "cds subscribe t1 --to http://localhost:4004 -u yves: && cds subscribe t2 --to http://localhost:4004 -u yves: && cds subscribe t3 --to http://localhost:4004 -u yves:",
+    "upgradeTenants": "cds upgrade t1 --at http://localhost:4004 -u yves: && cds upgrade t2 --at http://localhost:4004 -u yves: && cds upgrade t3 --at http://localhost:4004 -u yves:",
+    "unsubscribeTenants": "cds unsubscribe t1 --from http://localhost:4004 -u yves: && cds unsubscribe t2 --from http://localhost:4004 -u yves: && cds unsubscribe t3 --from http://localhost:4004 -u yves:",
     "ship": "mbt build -t gen --mtar mta.tar && cf deploy gen/mta.tar -f"
   },
   "workspaces": [
