@@ -13,5 +13,5 @@ service CatalogService {
         value : String;
     }
 
-    function mockWebSocket() returns Boolean;
+    function writeToEventQueue() returns Boolean;
 }
