@@ -2,11 +2,33 @@
     "sql": {
         "native_hana_associations": false
     },
+    "eventQueue": {
+        "useAsCAPQueue": true,
+        "configFilePath": "./srv/event-config.yml"
+    },
     "requires": {
         "[development]": {
-            "multitenancy": false,
+            "multitenancy": true,
+            "db": {
+                "kind": "sqlite",
+                "credentials": {
+                    "url": "db.sqlite"
+                }
+            },
             "auth": {
-                "kind": "mocked"
+                "kind": "mocked-auth",
+                "users": {
+                    "alice": {
+                        "tenant": "t1",
+                        "password": "alice",
+                        "id": "alice@wonderland.com"
+                    },
+                    "bob": {
+                        "tenant": "t2",
+                        "password": "bob",
+                        "id": "bob@builder.com"
+                    }
+                }
             }
         },
         "[production]": {
@@ -23,6 +45,8 @@
         "extensibility": true,
         "cds.xt.ExtensibilityService": true,
         "cds.xt.ModelProviderService": true,
+        "cds.xt.SaasProvisioningService": true,
+        "cds.xt.DeploymentService": true,
         "html5-repo": true,
         "portal": true
     },
